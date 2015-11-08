@@ -1,0 +1,16 @@
+[Unit]
+Description=S3QL is a filesystem that stores all its data online
+
+After=network.target
+
+[Service]
+
+ExecStartPre = /usr/bin/fsck.s3ql  --batch --log syslog s3://{{ s3ql_bucket_name }}
+ExecStart    = /usr/bin/mount.s3ql --fg    --log syslog s3://{{ s3ql_bucket_name }} {{ s3ql_mountpoint }}
+
+ExecStop     = /usr/bin/umount.s3ql {{ s3ql_mountpoint }}
+
+TimeoutStopSec = 180 
+
+[Install]
+WantedBy=multi-user.target
