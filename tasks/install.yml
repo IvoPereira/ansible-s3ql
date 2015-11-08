@@ -2,6 +2,8 @@
 - name: Install Packages | apt
   apt:
     state: latest
+    install_recommends: no
     pkg: "{{ item }}"
   with_items:
     - s3ql
+    - expect
