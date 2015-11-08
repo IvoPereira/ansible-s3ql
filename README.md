@@ -27,7 +27,7 @@ Example Playbook
 ----------------
     - hosts: servers
       roles:
-         - role: colstrom.s3ql
+         - role: ansible-s3ql
            s3ql_bucket_name: mybucketname
            s3ql_mountpoint: /mnt/s3
 
@@ -39,3 +39,4 @@ Contributors
 ------------
 * [Chris Olstrom](https://colstrom.github.io/) | [e-mail](mailto:chris@olstrom.com) | [Twitter](https://twitter.com/ChrisOlstrom)
 * Aaron Pederson
+* Christian Wagner

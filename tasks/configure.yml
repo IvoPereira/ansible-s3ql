@@ -48,16 +48,16 @@
   tags:
     - configuration
     - template-configuration
-    
+
 - name: Copy S3QL mountfs wrapper script
   copy: src=s3ql_makefs.expect dest=/usr/local/bin/.runonce/s3ql_makefs.expect mode=0700
-  
+
 - name: Make S3QL filesystem (run only once)
   script: s3ql_makefs.sh creates=/usr/local/bin/.runonce/s3ql_makefs.done
-  
+
 - name: Copy S3QL systemd unit file
   copy: src=s3ql.service dest=/etc/systemd/system/s3ql.service
-  
+
 - name: Enable S3QL and mount {{ s3ql_bucket_name }} to {{ s3ql_mountpoint }}
   service: name=s3ql.service enabled=yes state=started
   tags:
