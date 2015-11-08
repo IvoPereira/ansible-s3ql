@@ -1,21 +1,15 @@
 ---
-dependencies:
-  - role: colstrom.apt-repository
-    repository_key: "0x3020c5209958c967"
-    repository_url: "deb http://ppa.launchpad.net/nikratio/s3ql/ubuntu {{ ansible_distribution_release }} main"
-  - role: colstrom.logrotate
-    logrotate_name: s3ql
 galaxy_info:
-  author: "Chris Olstrom"
-  company: "TELUS digital"
+  author: "Chris Olstrom, modifications: Christian Wagner"
   description: "S3QL is a file system that stores all its data online using storage services like Google Storage, Amazon S3, or OpenStack."
   license: MIT
   platforms:
-    - name: Ubuntu
-      versions:
-      - trusty
-      - utopic
+  - name: Debian 
+    versions:
+    - jessie
   categories:
-    - cloud:ec2
     - system
     - networking
+dependencies:
+  - role: colstrom.logrotate
+    logrotate_name: s3ql
