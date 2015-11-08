@@ -1,9 +1,4 @@
 ---
-# - name: "Create ext4 filesystem on {{ instance_store_device }}"
-#   filesystem:
-#      dev: /dev/xvda2
-#      fstype: ext3
-
 - name: "Directories Exists"
   file:
     state: directory
@@ -16,6 +11,9 @@
      - "{{ s3ql_log_root }}"
   tags:
     - directory-structure
+
+- name: Creates a run-once directory for s3ql
+  file: path=/usr/local/bin/.runonce state=directory
 
 - name: Configure | /etc/fuse.conf | user_allow_other
   lineinfile:
@@ -38,27 +36,29 @@
   tags:
     - directory-structure
 
-- name: "Upload Config"
+- name: "Upload Authinfo"
   template:
     src: "{{ item }}"
-    dest: "/{{ item }}"
+    dest: "{{s3ql_authinfo_path}}/{{ item }}"
     mode: 0400
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
   with_items:
-    - data/www/s3ql-authinfo
-    - etc/init/s3ql.conf
+    - s3ql-authinfo
   tags:
     - configuration
     - template-configuration
-
-- name: "Create s3ql filesystem on {{ s3ql_bucket_name }}"
-  command: "mkfs.s3ql s3://{{ s3ql_bucket_name }} --plain --cachedir={{ s3ql_cache_path }} --authfile={{ s3ql_authinfo_path }}"
-  ignore_errors: True
-
-- name: "Mount {{ s3ql_bucket_name }} to {{ s3ql_mountpoint }}"
-  service:
-    name: s3ql
-    state: started
+    
+- name: Copy S3QL mountfs wrapper script
+  copy: src=s3ql_makefs.expect dest=/usr/local/bin/.runonce/s3ql_makefs.expect mode=0700
+  
+- name: Make S3QL filesystem (run only once)
+  script: s3ql_makefs.sh creates=/usr/local/bin/.runonce/s3ql_makefs.done
+  
+- name: Copy S3QL systemd unit file
+  copy: src=s3ql.service dest=/etc/systemd/system/s3ql.service
+  
+- name: Enable S3QL and mount {{ s3ql_bucket_name }} to {{ s3ql_mountpoint }}
+  service: name=s3ql.service enabled=yes state=started
   tags:
-    - mount-volume
+  - mount-volume
