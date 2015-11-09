@@ -1,10 +1,9 @@
-#!/usr/bin/expect
+#!/usr/bin/expect -f
 
-spawn mkfs.s3ql --force s3://{{ s3ql_bucket_name }} --cachedir={{ s3ql_cache_path }} --authfile={{ s3ql_authinfo_path }}
+spawn mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
 
 expect "Enter encryption password:"
 send "{{ s3ql_encryption_password }}\r"
 expect "Confirm encryption password:"
 send "{{ s3ql_encryption_password }}\r"
-
 expect eof

@@ -1,5 +1,5 @@
 ---
-- name: Install Packages | apt
+- name: Install Packages s3ql, expect | apt
   apt:
     state: latest
     install_recommends: no

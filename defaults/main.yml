@@ -1,14 +1,10 @@
 ---
-s3ql_log_root: "{{ log_root | default('/var/log') }}/s3ql"
-s3ql_log_path: "{{ s3ql_log_root }}/s3ql.log"
-
 s3ql_mountpoint: /mnt/s3ql
-s3ql_authinfo_path: /root/.s3ql/authinfo2
-s3ql_cache_path: /root/.s3ql
+s3ql_authinfo_file: /root/.s3ql/authinfo2
+s3ql_cache_dir: /root/.s3ql
 s3ql_user: root
 s3ql_group: root
-s3ql_bucket_name: ""
+s3ql_storage_url: ''
 s3ql_access_key_id: ''
 s3ql_secret_access_key: ''
-s3ql_encryption_enabled: no
 s3ql_encryption_password: ''

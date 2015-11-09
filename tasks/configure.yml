@@ -1,19 +1,13 @@
 ---
-- name: "Directories Exists"
+- name: Create cache directory
   file:
     state: directory
-    path: "{{ item }}"
+    path: "{{ s3ql_cache_dir }}"
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
     mode: 0775
-  with_items:
-     - "{{ s3ql_cache_path }}"
-     - "{{ s3ql_log_root }}"
   tags:
     - directory-structure
-
-- name: Creates a run-once directory for s3ql
-  file: path=/usr/local/bin/.runonce state=directory
 
 - name: Configure | /etc/fuse.conf | user_allow_other
   lineinfile:
@@ -25,7 +19,7 @@
     - configuration
     - fuse
 
-- name: "Directory Exists {{ s3ql_mountpoint }}"
+- name: Create a mountpoint directory
   file:
     state: directory
     path: "{{ s3ql_mountpoint }}"
@@ -36,10 +30,10 @@
   tags:
     - directory-structure
 
-- name: Upload Authinfo
+- name: Upload Authinfo from template
   template:
     src: s3ql-authinfo.j2
-    dest: "{{s3ql_authinfo_path}}/{{ item }}"
+    dest: "{{ s3ql_authinfo_file }}"
     mode: 0400
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
@@ -47,16 +41,48 @@
     - configuration
     - template-configuration
 
-- name: Upload S3QL mountfs wrapper script
-  template: src=s3ql_makefs.expect.j2 dest=/usr/local/bin/.runonce/s3ql_makefs.expect mode=0700
+- name: Upload S3QL makefs expect-script from template
+  template: 
+    src: s3ql_makefs.expect.j2
+    dest: /usr/local/bin/s3ql_makefs.expect
+    mode: 0700
+  tags:
+    - configuration
+    - template-configuration
+
+# This won't run if .initialized file exists, so result.changed will be false,
+# thereby suppressing other install tasks.  Install file is created by the
+# "Mark s3ql install as initialized" task.
+- name: Check for existing initialized S3QL install
+  command: true
+           creates=/etc/.s3ql.initialized
+  register: result
 
 - name: Make S3QL filesystem (run only once)
-  script: s3ql_makefs.sh creates=/usr/local/bin/.runonce/s3ql_makefs.done
+  shell: /usr/local/bin/s3ql_makefs.expect
+  when: result|changed
 
-- name: Upload S3QL systemd unit file
-  template: src=s3ql.service.j2 dest=/etc/systemd/system/s3ql.service
+- name: Mark S3QL install as initialized
+  command: touch /etc/.s3ql.initialized
+  args:
+    creates: /etc/.s3ql.initialized
+  when: result|changed
 
-- name: "Enable S3QL and mount {{ s3ql_bucket_name }} to {{ s3ql_mountpoint }}"
-  service: name=s3ql.service enabled=yes state=started
+- name: Upload S3QL systemd unit file from template
+  template: 
+    src: s3ql.service.j2
+    dest: /etc/systemd/system/s3ql.service
+  notify:
+  - reload systemd
+  - restart s3ql
+  tags:
+    - configuration
+    - template-configuration
+
+- name: Enable S3QL service and mount
+  service: 
+    name: s3ql.service
+    enabled: yes 
+    state: started
   tags:
   - mount-volume
