@@ -2,7 +2,7 @@
 
 [S3QL](https://bitbucket.org/nikratio/s3ql/) is a file system that stores all its data encrypted online using storage services like Google Storage, Amazon S3, or OpenStack.
 
-[![Platforms](http://img.shields.io/badge/platforms-ubuntu-lightgrey.svg?style=flat)](#)
+[![Platforms](http://img.shields.io/badge/platforms-debian-green.svg?style=flat)](#)
 
 Tunables
 --------
