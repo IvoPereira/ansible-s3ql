@@ -19,17 +19,6 @@
     - configuration
     - fuse
 
-- name: Create a mountpoint directory
-  file:
-    state: directory
-    path: "{{ s3ql_mountpoint }}"
-    owner: "{{ s3ql_user }}"
-    group: "{{ s3ql_group }}"
-    mode: 0775
-  ignore_errors: True
-  tags:
-    - directory-structure
-
 - name: Upload Authinfo from template
   template:
     src: s3ql-authinfo.j2
@@ -37,15 +26,6 @@
     mode: 0400
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
-  tags:
-    - configuration
-    - template-configuration
-
-- name: Upload S3QL makefs expect-script from template
-  template: 
-    src: s3ql_makefs.expect.j2
-    dest: /usr/local/bin/s3ql_makefs.expect
-    mode: 0700
   tags:
     - configuration
     - template-configuration
@@ -58,9 +38,25 @@
            creates=/etc/.s3ql.initialized
   register: result
 
-- name: Make S3QL filesystem (run only once)
-  shell: /usr/local/bin/s3ql_makefs.expect
+- name: Create a mountpoint directory (run only once)
+  file:
+    state: directory
+    path: "{{ s3ql_mountpoint }}"
+    owner: "{{ s3ql_user }}"
+    group: "{{ s3ql_group }}"
+    mode: 0775
+  ignore_errors: True
+  tags:
+    - directory-structure
   when: result|changed
+
+- name: Make S3QL encrypted filesystem (run only once)
+  shell: echo "{{ s3ql_encryption_password }}\n{{ s3ql_encryption_password }}\n" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
+  when: s3ql_encryption_enabled and result|changed
+
+- name: Make S3QL unencrypted filesystem (run only once)
+  shell: mkfs.s3ql --plain --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
+  when: not s3ql_encryption_enabled and result|changed
 
 - name: Mark S3QL install as initialized
   command: touch /etc/.s3ql.initialized

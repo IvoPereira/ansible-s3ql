@@ -7,4 +7,5 @@ s3ql_group: root
 s3ql_storage_url: ''
 s3ql_access_key_id: ''
 s3ql_secret_access_key: ''
+s3ql_encryption_enabled: true
 s3ql_encryption_password: ''

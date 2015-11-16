@@ -1,4 +1,8 @@
 #!/usr/bin/expect -f
+#
+# {{ ansible_managed }}
+
+exp_internal 1
 
 spawn mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
 

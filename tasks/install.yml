@@ -1,9 +1,5 @@
 ---
-- name: Install Packages s3ql, expect | apt
+- name: Install Package s3ql | apt
   apt:
     state: latest
-    install_recommends: no
-    pkg: "{{ item }}"
-  with_items:
-    - s3ql
-    - expect
+    pkg: s3ql

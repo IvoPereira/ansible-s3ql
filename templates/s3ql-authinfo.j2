@@ -1,5 +1,9 @@
+# {{ ansible_managed }}
+#
 [s3]
 storage-url: {{ s3ql_storage_url }}
 backend-login: {{ s3ql_access_key_id }}
 backend-password: {{ s3ql_secret_access_key }}
+{% if s3ql_encryption_enabled %}
 fs-passphrase: {{ s3ql_encryption_password }}
+{% endif %}
