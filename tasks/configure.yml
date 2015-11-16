@@ -78,6 +78,7 @@
   tags:
     - configuration
     - template-configuration
+    - notesting
 
 - name: Enable S3QL service and mount
   service: 
