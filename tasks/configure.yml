@@ -53,10 +53,14 @@
 - name: Make S3QL encrypted filesystem (run only once)
   shell: echo "{{ s3ql_encryption_password }}\n{{ s3ql_encryption_password }}\n" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
   when: s3ql_encryption_enabled and result|changed
+  tags:
+    - notesting
 
 - name: Make S3QL unencrypted filesystem (run only once)
   shell: mkfs.s3ql --plain --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
   when: not s3ql_encryption_enabled and result|changed
+  tags:
+    - notesting
 
 - name: Mark S3QL install as initialized
   command: touch /etc/.s3ql.initialized

@@ -29,11 +29,11 @@ script:
   - ansible-playbook tests/test.yml --syntax-check
 
   # Run the role/playbook with ansible-playbook.
-  - ansible-playbook tests/test.yml --sudo -vvvv
+  - ansible-playbook tests/test.yml --sudo -vvvv --skip-tags "notesting"
 
   # Run the role/playbook again, checking to make sure it's idempotent.
   - >
-    ansible-playbook tests/test.yml --sudo
+    ansible-playbook tests/test.yml --sudo --skip-tags "notesting"
     | grep -q 'changed=0.*failed=0'
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
