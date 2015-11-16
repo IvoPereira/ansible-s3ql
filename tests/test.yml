@@ -1,4 +1,4 @@
 ---
 - hosts: localhost
   roles:
-    - chriswayg.s3ql
+    - ansible-s3ql
