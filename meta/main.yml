@@ -8,6 +8,7 @@ galaxy_info:
   author: "Chris Olstrom, modifications: Christian Wagner"
   description: "S3QL is a file system that stores all its data encrypted online using storage services like Google Storage, Amazon S3, or OpenStack."
   license: MIT
+  min_ansible_version: 1.4
   platforms:
   - name: Debian 
     versions:
