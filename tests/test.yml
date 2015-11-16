@@ -1,0 +1,4 @@
+---
+- hosts: localhost
+  roles:
+    - chriswayg.s3ql
