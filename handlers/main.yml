@@ -3,8 +3,12 @@
 
 - name: reload systemd
   command: systemctl daemon-reload
+  tags:
+    - notesting
 
 - name: restart s3ql 
   service: 
     name: s3ql.service
     state: restarted
+  tags:
+    - notesting
