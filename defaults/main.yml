@@ -1,11 +1,45 @@
 ---
+# Check the mount and storage options here:
+# http://www.rath.org/s3ql-docs/mount.html
+# http://www.rath.org/s3ql-docs/backends.html
+
+# A S3QL file system is mounted with the mount.s3ql command
 s3ql_mountpoint: /mnt/s3ql
-s3ql_authinfo_file: /root/.s3ql/authinfo2
+
+# Store cached data in this directory (default: ~/.s3ql)
 s3ql_cache_dir: /root/.s3ql
+
+# Read authentication credentials from this file (default: ~/.s3ql/authinfo2)
+s3ql_authinfo_file: /root/.s3ql/authinfo2
+
+# Destination for log messages. Specify none for standard output or syslog for the system logging daemon.
+# Anything else will be interpreted as a file name. Log files will be rotated when they reach 1 MiB, and
+# at most 5 old log files will be kept. Default: ~/.s3ql/mount.log
+s3ql_log: syslog
 s3ql_user: root
 s3ql_group: root
-s3ql_storage_url: ''
-s3ql_access_key_id: ''
-s3ql_secret_access_key: ''
+
+# --allow-other Normally, only the user who called mount.s3ql can access the mount point.
+# This user then also has full access to it, independent of individual file permissions.
+# If the --allow-other option is specified, other users can access the mount point as well
+# and individual file permissions are taken into account for all users.
+# --allow-root 	Like --allow-other, but restrict access to the mounting user and the root user.
+s3ql_mount_options: --allow-other
+
+# The storage url without the prefix and without trailing slash
+# examples: s3://<region>/<bucket> or gs://<bucketname>
+s3ql_storage_url: ""
+# A unique prefix (without slashes)
+s3ql_prefix: default
+
+# Authentication for bucket.
+s3ql_access_key_id: ""
+s3ql_secret_access_key: ""
+
+# Encryption for s3ql mounted volumes.
 s3ql_encryption_enabled: true
-s3ql_encryption_password: ''
+s3ql_encryption_password: ""
+
+# enable to create a new filesystem in the bucket, otherwise it will just
+# mount the existing bucket with its data
+s3ql_create_filesystem: true
