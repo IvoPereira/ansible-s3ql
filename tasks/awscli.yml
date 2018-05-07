@@ -1,0 +1,36 @@
+---
+## Install awscli via pip (optional)
+# Causes an error if we try with something that doesn't exist so use this as workaround
+- name: Check to see if pip is already installed
+  command: pip --version
+  ignore_errors: true
+  changed_when: false
+  register: pip_is_installed
+  changed_when: false
+
+- name: Download pip installer get-pip.py
+  get_url:
+    url: https://bootstrap.pypa.io/get-pip.py
+    dest: /usr/local/src/
+  when: pip_is_installed.rc != 0
+
+- name: Install pip using get-pip.py
+  command: /usr/bin/python /usr/local/src/get-pip.py
+  when: pip_is_installed.rc != 0
+
+- name: Delete get-pip.py
+  file:
+    state: absent
+    path: /usr/local/src/get-pip.py
+  when: pip_is_installed.rc != 0
+
+- name: Upgrade to latest version of pip
+  pip:
+    name: pip
+    extra_args: --upgrade
+  when: pip_is_installed.rc == 0
+
+- name: Install awscli python package using pip
+  pip:
+    name: awscli
+    extra_args: --upgrade
