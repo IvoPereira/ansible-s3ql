@@ -4,7 +4,7 @@
 
 [![Platforms](http://img.shields.io/badge/Platforms-Debian-green.svg?style=flat)](#)
 
-This fork enables encryption on s3ql by default and installs on Debian Jessie, while supplying a systemd unit file. 
+This ansible role enables encryption on s3ql by default and installs on Debian Jessie or Stretch, while supplying a systemd unit file.
 
 Tunables
 --------
@@ -23,10 +23,11 @@ Example Playbook
     - hosts: servers
       roles:
         - role: ansible-s3ql
-          s3ql_storage_url: "s3://bucketname"
-          s3ql_access_key_id: ABCDEFGHIJKLMN
-          s3ql_secret_access_key: asdfghjklqwertyuiopzxcvbnm
-          s3ql_encryption_password: 1qaz2wsx3edc4rfv5tgb6yhn7ujm8ik9ol0p
+          s3ql_storage_url: 's3://serverbackup'
+          s3ql_access_key_id: 'ABCDEFGHIJKLMNOPQRST'
+          s3ql_secret_access_key: 'AABBCCDDEEFFGGHHIIJJKKLLMMNNOOPPQQRR0123'
+          s3ql_encryption_enabled: true
+          s3ql_encryption_password: '1234567890abcdefghijklmnopqrstuvwxyz'
 
 License
 -------

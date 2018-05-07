@@ -2,17 +2,19 @@
 # s3ql Data will be encrypted by default
 # - should work with Google Storage, Amazon S3 etc. when using the appropriate storage url
 # - limited to creating one s3ql filesystem per server
+# - does not check, if the bucket already contains a s3ql filesystem
 # - not really tested much with other user/group than root
 
 galaxy_info:
   author: "Chris Olstrom, modifications: Christian Wagner"
   description: "S3QL is a file system that stores all its data encrypted online using storage services like Google Storage, Amazon S3, or OpenStack."
   license: MIT
-  min_ansible_version: 1.4
+  min_ansible_version: 2.4
   platforms:
-  - name: Debian 
+  - name: Debian
     versions:
     - jessie
+    - stretch
   categories:
     - system
     - networking
