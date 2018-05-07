@@ -4,7 +4,7 @@
 
 exp_internal 1
 
-spawn mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
+spawn mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
 
 expect "Enter encryption password:"
 send "{{ s3ql_encryption_password }}\r"

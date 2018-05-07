@@ -1,18 +1,25 @@
 # {{ ansible_managed }}
 #
 [Unit]
-Description=S3QL is a filesystem that stores all its data encrypted online
+Description=S3QL encrypted cloud filesystem
 
 After=network.target
 
 [Service]
 
-ExecStartPre = /usr/bin/fsck.s3ql  --batch --log syslog --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
-ExecStart    = /usr/bin/mount.s3ql --fg    --log syslog --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }} {{ s3ql_mountpoint }}
+ExecStartPre = /usr/bin/fsck.s3ql  --batch --log {{ s3ql_log }} --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
+ExecStart    = /usr/bin/mount.s3ql --fg  {{ s3ql_mount_options }}  --log {{ s3ql_log }} --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }} {{ s3ql_mountpoint }}
 
 ExecStop     = /usr/bin/umount.s3ql {{ s3ql_mountpoint }}
+TimeoutStopSec = 300
 
-TimeoutStopSec = 180 
+# With notify Type, service manager will be notified
+# when the starting up has finished
+Type        = notify
+
+# Since Type is notify, notify service updates sent from any of the main or control processes
+# originating from one of the Exec*= commands are accepted.
+NotifyAccess= exec
 
 [Install]
 WantedBy=multi-user.target

@@ -1,10 +1,7 @@
 ---
 # handlers file for chriswayg.s3ql
 
-- name: reload systemd
-  command: systemctl daemon-reload
-
-- name: restart s3ql 
-  service: 
-    name: s3ql.service
+- name: restart s3ql
+  systemd:
+    name: s3ql-{{ s3ql_prefix }}.service
     state: restarted

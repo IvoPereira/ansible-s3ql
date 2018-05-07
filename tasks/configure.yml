@@ -1,90 +1,90 @@
 ---
-- name: Create cache directory
+
+- name: Create cache directory.
   file:
     state: directory
     path: "{{ s3ql_cache_dir }}"
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
     mode: 0775
-  tags:
-    - directory-structure
 
-- name: Configure | /etc/fuse.conf | user_allow_other
+- name: Configure | /etc/fuse.conf | user_allow_other.
   lineinfile:
     state: present
     dest: /etc/fuse.conf
     regexp: '^#?user_allow_other'
     line: user_allow_other
-  tags:
-    - configuration
-    - fuse
 
-- name: Upload Authinfo from template
+## TODO: Use s3_bucket (Ansible 2.0)) or gcp_storage_bucket (Ansible 2.6) to create a bucket in this role
+
+- name: Upload Authinfo from template.
   template:
     src: s3ql-authinfo.j2
     dest: "{{ s3ql_authinfo_file }}"
     mode: 0400
     owner: "{{ s3ql_user }}"
     group: "{{ s3ql_group }}"
-  tags:
-    - configuration
-    - template-configuration
 
-# This won't run if .initialized file exists, so result.changed will be false,
-# thereby suppressing other install tasks.  Install file is created by the
-# "Mark s3ql install as initialized" task.
-- name: Check for existing initialized S3QL install
-  command: true
-           creates=/etc/.s3ql.initialized
-  register: result
-
-- name: Create a mountpoint directory (run only once)
+- name: Create a mountpoint directory (if not exist).
   file:
     state: directory
     path: "{{ s3ql_mountpoint }}"
-    owner: "{{ s3ql_user }}"
-    group: "{{ s3ql_group }}"
-    mode: 0775
-  ignore_errors: True
-  tags:
-    - directory-structure
-  when: result|changed
+    # owner: "{{ s3ql_user }}"
+    # group: "{{ s3ql_group }}"
+    # mode: 0775
 
-- name: Make S3QL encrypted filesystem (run only once)
-  shell: echo "{{ s3ql_encryption_password }}\n{{ s3ql_encryption_password }}\n" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
-  when: s3ql_encryption_enabled and result|changed
-  tags:
-    - notesting
+- name: Check for existing initialized S3QL install.
+  stat:
+    path: /etc/.s3ql.{{ s3ql_prefix }}.initialized
+  register: s3ql_initialized
 
-- name: Make S3QL unencrypted filesystem (run only once)
-  shell: mkfs.s3ql --plain --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}
-  when: not s3ql_encryption_enabled and result|changed
-  tags:
-    - notesting
+- name: The follwing tasks won't run if .s3ql.initialized file already exists.
+  block:
 
-- name: Mark S3QL install as initialized
-  command: touch /etc/.s3ql.initialized
-  args:
-    creates: /etc/.s3ql.initialized
-  when: result|changed
+    - name: Make S3QL encrypted filesystem (run only once).
+      shell: echo "{{ s3ql_encryption_password }}\n{{ s3ql_encryption_password }}\n" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
+      when: s3ql_encryption_enabled
 
-- name: Upload S3QL systemd unit file from template
-  template: 
+    - name: Make S3QL unencrypted filesystem (run only once).
+      shell: mkfs.s3ql --plain --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
+      when: not s3ql_encryption_enabled
+
+    - name: Mark S3QL install as initialized.
+      file:
+        path: /etc/.s3ql.{{ s3ql_prefix }}.initialized
+        state: touch
+
+  when:
+    - s3ql_initialized.stat.exists == False
+    - s3ql_create_filesystem
+
+- name: Upload S3QL systemd unit file from template.
+  template:
     src: s3ql.service.j2
-    dest: /etc/systemd/system/s3ql.service
+    dest: /etc/systemd/system/s3ql-{{ s3ql_prefix }}.service
+  register: s3ql_servicefile
   notify:
-  - reload systemd
   - restart s3ql
-  tags:
-    - configuration
-    - template-configuration
-    - notesting
 
-- name: Enable S3QL service and mount
-  service: 
-    name: s3ql.service
-    enabled: yes 
+- name: Issue daemon-reload to pick up config changes.
+  systemd:
+    daemon_reload: yes
+    name: s3ql-{{ s3ql_prefix }}.service
+  when: s3ql_servicefile.changed
+
+- name: Enable S3QL service and mount.
+  systemd:
+    name: s3ql-{{ s3ql_prefix }}.service
+    enabled: True
     state: started
-  tags:
-  - mount-volume
-  - notesting
+  register: s3ql_service_mount
+
+- name: Pause for 3 seconds to complete mounting.
+  pause:
+    seconds: 3
+  when: s3ql_service_mount.changed
+
+- name: Check, that s3ql filesystem is really mounted.
+  command: grep -qs "{{ s3ql_mountpoint }} " /proc/mounts
+  #command: mountpoint -q "{{ s3ql_mountpoint }}"
+  changed_when: False

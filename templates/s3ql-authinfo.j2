@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 #
 [s3]
-storage-url: {{ s3ql_storage_url }}
+storage-url: {{ s3ql_storage_url }}/{{ s3ql_prefix }}
 backend-login: {{ s3ql_access_key_id }}
 backend-password: {{ s3ql_secret_access_key }}
 {% if s3ql_encryption_enabled %}
