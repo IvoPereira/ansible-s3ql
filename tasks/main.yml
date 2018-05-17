@@ -7,8 +7,8 @@
 
 - include_tasks: configure.yml
 
-# In case the role is called more than once in one play:
-- meta: flush_handlers
+- include_tasks: start-systemd.yml
+  when: ansible_os_family == "Debian"
 
 - name: Check, that s3ql filesystem is really mounted.
   command: grep -qs "{{ s3ql_mountpoint }} " /proc/mounts

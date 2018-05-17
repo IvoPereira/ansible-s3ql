@@ -57,6 +57,3 @@
   when:
     - s3ql_initialized.stat.exists == False
     - s3ql_create_filesystem
-
-- include_tasks: start-systemd.yml
-  when: ansible_os_family == "Debian"
