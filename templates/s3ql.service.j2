@@ -10,6 +10,8 @@ After=network.target
 ExecStartPre = /usr/bin/fsck.s3ql  --batch --log {{ s3ql_log }} --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
 ExecStart    = /usr/bin/mount.s3ql --fg  {{ s3ql_mount_options }}  --log {{ s3ql_log }} --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }} {{ s3ql_mountpoint }}
 
+ExecStop     = /usr/bin/s3qlctrl flushcache {{ s3ql_mountpoint }}
+ExecStop     = /usr/bin/s3qlctrl upload-meta {{ s3ql_mountpoint }}
 ExecStop     = /usr/bin/umount.s3ql {{ s3ql_mountpoint }}
 TimeoutStopSec = 300
 
