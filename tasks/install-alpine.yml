@@ -1,0 +1,52 @@
+---
+# Installs s3ql from source in /usr/bin
+- name: Install packages.
+  apk:
+    name: coreutils, util-linux, tar, psmisc, procps, openssl, build-base, python3-dev, attr-dev, fuse-dev, sqlite-dev
+    state: present
+    update_cache: yes
+
+- name: Pip upgrade pip.
+  pip:
+    name: pip
+    state: latest
+
+- name: Pip install modules.
+  pip:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - pycrypto
+    - defusedxml
+    - requests
+    - apsw
+    - llfuse
+    - dugong
+    - setuptools
+    - pytest
+
+- name: Download s3ql and extract.
+  unarchive:
+    src: https://bitbucket.org/nikratio/s3ql/downloads/s3ql-2.26.tar.bz2
+    dest: /opt
+    remote_src: yes
+
+- name: Build s3ql.
+  shell: python3 setup.py build_ext --inplace
+  args:
+    chdir: /opt/s3ql-2.26
+
+- name: Run s3ql Tests (wait a few minutes).
+  shell: python3 -m pytest -rs tests/
+  args:
+    chdir: /opt/s3ql-2.26
+
+- name: Install s3ql.
+  shell: python3 setup.py install
+  args:
+    chdir: /opt/s3ql-2.26
+
+- name: Show s3ql version.
+  shell: mount.s3ql --version
+  args:
+    chdir: /opt/s3ql-2.26
