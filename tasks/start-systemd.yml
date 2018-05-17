@@ -6,7 +6,7 @@
     dest: /etc/systemd/system/s3ql-{{ s3ql_prefix }}.service
   register: s3ql_servicefile
   notify:
-  - restart s3ql
+  - restart s3ql systemd
 
 - name: Issue daemon-reload to pick up config changes.
   systemd:
