@@ -4,7 +4,7 @@
 
 [![Platforms](http://img.shields.io/badge/Platforms-Debian-green.svg?style=flat)](#)
 
-This ansible role enables encryption on s3ql by default and installs on Debian Jessie or Stretch, while supplying a systemd unit file.
+This ansible role enables encryption on s3ql by default and installs on Alpine, Debian Jessie or Stretch, while supplying a systemd unit file.
 
 Tunables
 --------
