@@ -2,8 +2,6 @@
 services: docker
 
 env:
-  - distro: ubuntu1604
-  - distro: ubuntu1404
   - distro: debian9
   - distro: debian8
   - distro: alpine
