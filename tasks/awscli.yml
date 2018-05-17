@@ -1,5 +1,5 @@
 ---
-## Install awscli via pip (optional)
+## Install awscli via pip (optional, currently not used)
 # Causes an error if we try with something that doesn't exist so use this as workaround
 - name: Check to see if pip is already installed
   command: pip --version
