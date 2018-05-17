@@ -59,5 +59,6 @@
     dest: /etc/init.d/s3ql
     mode: 0755
 
-- name: Start s3ql init.
+- name: Start s3ql service.
   shell: /etc/init.d/s3ql start
+  when: not travis_testing

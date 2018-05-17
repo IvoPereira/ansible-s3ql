@@ -20,6 +20,7 @@
     enabled: True
     state: started
   register: s3ql_service_mount
+  when: not travis_testing
 
 - name: Pause for a few seconds to complete mounting.
   pause:
