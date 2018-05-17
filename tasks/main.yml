@@ -14,3 +14,4 @@
   command: grep -qs "{{ s3ql_mountpoint }} " /proc/mounts
   #command: mountpoint -q "{{ s3ql_mountpoint }}"
   changed_when: False
+  when: not travis_testing
