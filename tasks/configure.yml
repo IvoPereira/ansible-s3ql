@@ -58,33 +58,5 @@
     - s3ql_initialized.stat.exists == False
     - s3ql_create_filesystem
 
-- name: Upload S3QL systemd unit file from template.
-  template:
-    src: s3ql.service.j2
-    dest: /etc/systemd/system/s3ql-{{ s3ql_prefix }}.service
-  register: s3ql_servicefile
-  notify:
-  - restart s3ql
-
-- name: Issue daemon-reload to pick up config changes.
-  systemd:
-    daemon_reload: yes
-    name: s3ql-{{ s3ql_prefix }}.service
-  when: s3ql_servicefile.changed
-
-- name: Enable S3QL service and mount.
-  systemd:
-    name: s3ql-{{ s3ql_prefix }}.service
-    enabled: True
-    state: started
-  register: s3ql_service_mount
-
-- name: Pause for 3 seconds to complete mounting.
-  pause:
-    seconds: 3
-  when: s3ql_service_mount.changed
-
-- name: Check, that s3ql filesystem is really mounted.
-  command: grep -qs "{{ s3ql_mountpoint }} " /proc/mounts
-  #command: mountpoint -q "{{ s3ql_mountpoint }}"
-  changed_when: False
+- include_tasks: start-systemd.yml
+  when: ansible_distribution == "Debian"
