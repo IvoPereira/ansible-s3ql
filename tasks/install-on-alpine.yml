@@ -2,7 +2,7 @@
 # Installs s3ql from source in /usr/bin
 - name: Ensure, that all dependencies are installed.
   apk:
-    name: coreutils, util-linux, tar, psmisc, procps, openssl, build-base, python3-dev, attr-dev, fuse-dev, sqlite-dev
+    name: py-pip, coreutils, util-linux, tar, psmisc, procps, openssl, build-base, python3-dev, attr-dev, fuse-dev, sqlite-dev
     state: present
     update_cache: yes
 
