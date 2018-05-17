@@ -8,3 +8,4 @@
       s3ql_access_key_id: "GOOGMVTLCLUUYYCEHIWOOSHL"
       s3ql_secret_access_key: "SGfTepmBGui8MPOeBkBOFSzyhZpMlRttb/VA5JCO"
       s3ql_encryption_password: "PkDXnZFDhbfBwMern6GQnDuFtgKjdZepszTtpwdbqRficEY6RdiVHLBjDDAoRbeX"
+      s3ql_create_filesystem: false
