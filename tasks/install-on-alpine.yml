@@ -1,0 +1,62 @@
+---
+# Installs s3ql from source in /usr/bin
+- name: Ensure, that all dependencies are installed.
+  apk:
+    name: coreutils, util-linux, tar, psmisc, procps, openssl, build-base, python3-dev, attr-dev, fuse-dev, sqlite-dev
+    state: present
+    update_cache: yes
+
+- name: Ensure, that Pip is upgraded to the latest version.
+  pip:
+    name: pip
+    state: latest
+
+- name: Ensure, that Python module dependencies are installed.
+  pip:
+    name: pycrypto, defusedxml, requests, apsw, llfuse, dugong, setuptools, pytest
+    state: present
+
+- name: Ensure, that s3ql source code is downloaded and extracted.
+  unarchive:
+    src: "https://bitbucket.org/nikratio/s3ql/downloads/s3ql-{{ s3ql_version }}.tar.bz2"
+    dest: /tmp
+    remote_src: yes
+    creates: "/tmp/s3ql-{{ s3ql_version }}.tar.bz2"
+
+- name: Build s3ql.
+  shell: python3 setup.py build_ext --inplace
+  args:
+    chdir: "/tmp/s3ql-{{ s3ql_version }}"
+    creates: "/tmp/s3ql-{{ s3ql_version }}/bin/mount.s3ql"
+  register: s3ql_built
+
+- name: Run s3ql Tests (wait a few minutes).
+  shell: python3 -m pytest -rs tests/
+  args:
+    chdir: "/tmp/s3ql-{{ s3ql_version }}"
+  when: s3ql_built.changed
+
+- name: Install s3ql in /usr.
+  shell: python3 setup.py install
+  args:
+    chdir: "/tmp/s3ql-{{ s3ql_version }}"
+    creates: /usr/bin/mount.s3ql
+  register: s3ql_install
+
+- name: Show s3ql version.
+  shell: mount.s3ql --version
+  when: s3ql_install.changed
+
+# - name: Remove build packages (optional).
+#   apk:
+#     name: build-base python3-dev attr-dev fuse-dev sqlite-dev
+#     state: absent
+
+- name: Upload S3QL init script from template.
+  template:
+    src: s3ql-init.j2
+    dest: /etc/init.d/s3ql
+    mode: 0755
+
+- name: Start s3ql init.
+  shell: /etc/init.d/s3ql start
