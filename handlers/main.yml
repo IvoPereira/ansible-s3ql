@@ -1,7 +1,10 @@
 ---
 # handlers file for chriswayg.s3ql
 
-- name: restart s3ql
+- name: restart s3ql systemd
   systemd:
     name: s3ql-{{ s3ql_prefix }}.service
     state: restarted
+
+- name: start s3ql init
+  shell: /etc/init.d/s3ql start
