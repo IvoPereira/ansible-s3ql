@@ -17,12 +17,14 @@
     name: pycrypto, defusedxml, requests, apsw, llfuse, dugong, setuptools, pytest
     state: present
 
+# this always reports as changed
 - name: Ensure, that s3ql source code is downloaded and extracted.
   unarchive:
     src: "https://bitbucket.org/nikratio/s3ql/downloads/s3ql-{{ s3ql_version }}.tar.bz2"
     dest: /tmp
     remote_src: yes
     creates: "/tmp/s3ql-{{ s3ql_version }}.tar.bz2"
+  changed_when: false
 
 - name: Build s3ql.
   shell: python3 setup.py build_ext --inplace
