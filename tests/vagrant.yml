@@ -1,0 +1,28 @@
+# test file for s3ql
+---
+- hosts: all
+  remote_user: vagrant
+  become: true
+
+  roles:
+    - role: ../../
+      s3ql_mountpoint: /mnt/test2
+      s3ql_cache_dir: /root/.s3ql_test2
+      s3ql_authinfo_file: /root/.s3ql_test2/authinfo2
+      s3ql_prefix: test2
+      s3ql_storage_url: gs://test2_s3ql_backup
+      s3ql_access_key_id: GOOGKAWR2FIIUDIBQKN7
+      s3ql_secret_access_key: QjtKZbGmQp/7UDLutF3oo18wuhockY89OMDap7DZ
+      s3ql_encryption_password: HkNiBFUHr2xsJYvGCCEDGjRGTmGGYcKctWURBoGwkwMuChwdUi
+    # s3ql_create_filesystem: false
+  
+    - role: ../../
+      s3ql_mountpoint: /mnt/test3
+      s3ql_cache_dir: /root/.s3ql_test3
+      s3ql_authinfo_file: /root/.s3ql_test3/authinfo2
+      s3ql_prefix: test3
+      s3ql_storage_url: gs://test3_s3ql_backup
+      s3ql_access_key_id: GOOGKAWR2FIIUDIBQKN7
+      s3ql_secret_access_key: QjtKZbGmQp/7UDLutF3oo18wuhockY89OMDap7DZ
+      s3ql_encryption_password: HkNiBFUHr2xsJYvGCCEDGjRGTmGGYcKctWURBoGwkwMuChwdUi
+    # s3ql_create_filesystem: false

@@ -4,4 +4,7 @@
 
   roles:
     - role: role_under_test
-    
+      s3ql_storage_url: "gs://travis-temp-test-bucket"
+      s3ql_access_key_id: "GOOGMVTLCLUUYYCEHIWOOSHL"
+      s3ql_secret_access_key: "SGfTepmBGui8MPOeBkBOFSzyhZpMlRttb/VA5JCO"
+      s3ql_encryption_password: "pD{%.cNfx>ZXvpqjYKwyKXHaD\tk9B&Gb=gFHu@b]wCvm2KnC{kxbMgcfJYxnB?vq"
