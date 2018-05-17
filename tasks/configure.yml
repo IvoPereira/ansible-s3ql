@@ -42,7 +42,7 @@
   block:
 
     - name: Make S3QL encrypted filesystem (run only once).
-      shell: echo "{{ s3ql_encryption_password }}\n{{ s3ql_encryption_password }}\n" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
+      shell: printf '%s\n' "{{ s3ql_encryption_password }}" "{{ s3ql_encryption_password }}" | mkfs.s3ql --authfile {{ s3ql_authinfo_file }} --cachedir {{ s3ql_cache_dir }} {{ s3ql_storage_url }}/{{ s3ql_prefix }}
       when: s3ql_encryption_enabled
 
     - name: Make S3QL unencrypted filesystem (run only once).
@@ -59,4 +59,4 @@
     - s3ql_create_filesystem
 
 - include_tasks: start-systemd.yml
-  when: ansible_distribution == "Debian"
+  when: ansible_os_family == "Debian"
