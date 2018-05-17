@@ -1,4 +1,7 @@
 ---
-- hosts: localhost
+# tests run by travis
+- hosts: all
+
   roles:
-    - ansible-s3ql
+    - role: role_under_test
+    
