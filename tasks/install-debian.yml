@@ -1,5 +1,0 @@
----
-- name: Install Package s3ql | apt
-  apt:
-    state: latest
-    pkg: s3ql
