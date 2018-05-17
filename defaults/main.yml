@@ -3,6 +3,12 @@
 # http://www.rath.org/s3ql-docs/mount.html
 # http://www.rath.org/s3ql-docs/backends.html
 
+# Version, when installing from source:
+s3ql_version: 2.26
+
+s3ql_user: root
+s3ql_group: root
+
 # A S3QL file system is mounted with the mount.s3ql command
 s3ql_mountpoint: /mnt/s3ql
 
@@ -16,8 +22,6 @@ s3ql_authinfo_file: /root/.s3ql/authinfo2
 # Anything else will be interpreted as a file name. Log files will be rotated when they reach 1 MiB, and
 # at most 5 old log files will be kept. Default: ~/.s3ql/mount.log
 s3ql_log: syslog
-s3ql_user: root
-s3ql_group: root
 
 # --allow-other Normally, only the user who called mount.s3ql can access the mount point.
 # This user then also has full access to it, independent of individual file permissions.
