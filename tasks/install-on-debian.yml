@@ -2,4 +2,4 @@
 - name: Ensure, that s3ql is installed.
   apt:
     state: present
-    pkg: s3ql
+    name: s3ql
