@@ -39,7 +39,7 @@ case "$1" in
         echo "ERROR: this is the error code: $STA"
 		exit $STA
 	fi
-	mount.s3ql --log /var/log/s3ql/mount.log --authfile {{ s3ql_authinfo_file }} {{ s3ql_storage_url }}/{{ s3ql_prefix }} {{ s3ql_mountpoint }}
+	mount.s3ql --fg  {{ s3ql_mount_options }} --log /var/log/s3ql/mount.log --authfile {{ s3ql_authinfo_file }} {{ s3ql_storage_url }}/{{ s3ql_prefix }} {{ s3ql_mountpoint }}
 	if [ $STA -eq 0 ]; then
         echo "successfully mounted on {{ s3ql_mountpoint }}"
     else
