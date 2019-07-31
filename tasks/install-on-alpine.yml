@@ -20,7 +20,7 @@
 # this always reports as changed
 - name: Ensure, that s3ql source code is downloaded and extracted.
   unarchive:
-    src: "https://bitbucket.org/nikratio/s3ql/downloads/s3ql-{{ s3ql_version }}.tar.bz2"
+    src: "https://github.com/s3ql/s3ql/releases/download/release-{{ s3ql_version }}/s3ql-{{ s3ql_version }}.tar.bz2"
     dest: /tmp
     remote_src: yes
     creates: "/tmp/s3ql-{{ s3ql_version }}.tar.bz2"
