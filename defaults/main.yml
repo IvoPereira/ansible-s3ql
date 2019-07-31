@@ -4,7 +4,7 @@
 # http://www.rath.org/s3ql-docs/backends.html
 
 # Version, when installing from source:
-s3ql_version: 2.26
+s3ql_version: 3.2
 
 s3ql_user: root
 s3ql_group: root
@@ -48,4 +48,4 @@ s3ql_encryption_password: ""
 # mount the existing bucket with its data
 s3ql_create_filesystem: true
 
-travis_testing: false 
+travis_testing: false
