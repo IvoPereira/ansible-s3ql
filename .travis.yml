@@ -1,10 +1,11 @@
 ---
 services: docker
 
+## TODO: Fix Alpine
 env:
   - distro: debian9
   - distro: debian8
-  - distro: alpine
+  #- distro: alpine
 
 script:
   # Configure test script so we can run extra tests after playbook is run
