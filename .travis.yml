@@ -3,6 +3,7 @@ services: docker
 
 ## TODO: Fix Alpine
 env:
+  - distro: debian10
   - distro: debian9
   - distro: debian8
   #- distro: alpine
